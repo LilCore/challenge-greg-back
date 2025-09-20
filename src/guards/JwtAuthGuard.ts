@@ -4,47 +4,39 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-// import { promisify } from 'util';
-// import { GetVerificationKey, expressjwt } from 'express-jwt';
-// import { expressJwtSecret } from 'jwks-rsa';
-import * as CryptoJS from "crypto-js";
+import CryptoJS from "crypto-js";
+
+interface JwtPayload {
+  email?: string;
+}
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  canActivate(context: ExecutionContext): Promise<boolean> {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const req = context.getArgByIndex(0);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const res = context.getArgByIndex(1);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      const authorization: string = (req?.headers?.authorization ??
-        "") as string;
+      const req: Request = context.getArgByIndex(0);
+      // const res: Response = context.getArgByIndex(1);
 
+      const headers = req?.headers as Headers & { authorization: string };
+      const authorization: string = headers?.authorization ?? "";
       const token = authorization.replace("Bearer ", "");
-      // Decrypt the token using the secret key
+      const secretKey = process.env.JWT_BEARER_TOKEN_SECRET_KEY ?? "";
 
-      console.log({ token });
+      console.log({ token, secretKey });
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      const decryptedData = CryptoJS.AES.decrypt(
-        token,
-        process.env.JWT_BEARER_TOKEN_SECRET_KEY,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      );
-
-      // console.log({ decryptedData });
-      const decryptedDataString = decryptedData.toString(CryptoJS.enc.Utf8);
-      // console.log({ decryptedDataString });
+      // Ensure the token is a valid base64 string before decrypting
+      const decryptedData = CryptoJS.AES.decrypt(token, secretKey);
+      const decryptedDataString = CryptoJS.enc.Utf8.stringify(decryptedData);
 
       if (!decryptedDataString) {
         throw new UnauthorizedException("Invalid or expired token");
       }
 
       // Optionally, you can parse the decrypted string if it's JSON
-      let payload: any;
+
+      let payload: JwtPayload;
       try {
-        payload = JSON.parse(decryptedDataString);
+        payload = JSON.parse(decryptedDataString) as JwtPayload;
       } catch {
         throw new UnauthorizedException("Malformed token payload");
       }
@@ -56,10 +48,11 @@ export class JwtAuthGuard implements CanActivate {
         throw new UnauthorizedException("Invalid token payload");
       }
 
-      return true;
+      return Promise.resolve(true);
     } catch (error) {
       console.log(error);
       throw new UnauthorizedException(error);
     }
   }
 }
+//U2FsdGVkX19B+DCvLLwzq5MYpJ8B1ZI9jnmZhErBGnTSwybG5DUFisBHdAWkWlhfS6Km+rMRIR3dAxXP90ariLPkAyj93XrTOMkStvkb7xDjaGe6A/vLw+/SaSGx8PJHaxZ1PQJ3ff2Zqnpu/+aHWHVZwHf0xLkYGe0UpW36sj6DFdA9L/QfLTc/oxciaQI5DSq8ZxIbqnMG1j9QZXDMRragLJJCeZcP1CfotDT3CBU=

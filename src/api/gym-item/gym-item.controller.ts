@@ -17,22 +17,16 @@ import { JwtAuthGuard } from "src/guards/JwtAuthGuard";
 export class GymItemController {
   constructor(private readonly gymItemService: GymItemService) {}
 
-  @Post()
+  @Post("create")
   @UseGuards(JwtAuthGuard)
   create(@Body() createGymItemDto: CreateGymItemDto) {
     return this.gymItemService.create(createGymItemDto);
   }
 
-  @Get()
+  @Get("get-all")
   @UseGuards(JwtAuthGuard)
   findAll() {
     return this.gymItemService.findAll();
-  }
-
-  @Get(":id")
-  @UseGuards(JwtAuthGuard)
-  findOne(@Param("id") id: string) {
-    return this.gymItemService.findOne(id);
   }
 
   @Patch(":id")
@@ -46,4 +40,10 @@ export class GymItemController {
   remove(@Param("id") id: string) {
     return this.gymItemService.remove(id);
   }
+
+  // @Get(":id")
+  // @UseGuards(JwtAuthGuard)
+  // findOne(@Param("id") id: string) {
+  //   return this.gymItemService.findOne(id);
+  // }
 }
