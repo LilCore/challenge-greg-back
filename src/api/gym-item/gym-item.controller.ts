@@ -12,7 +12,10 @@ import { GymItemService } from "./gym-item.service";
 import { CreateGymItemDto } from "./dto/create-gym-item.dto";
 import { UpdateGymItemDto } from "./dto/update-gym-item.dto";
 import { JwtAuthGuard } from "src/guards/JwtAuthGuard";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
+@ApiTags("Gym Item")
+@ApiBearerAuth()
 @Controller("gym-item")
 export class GymItemController {
   constructor(private readonly gymItemService: GymItemService) {}
@@ -23,10 +26,16 @@ export class GymItemController {
     return this.gymItemService.create(createGymItemDto);
   }
 
-  @Get("get-all")
+  // @Get("get-all")
+  // @UseGuards(JwtAuthGuard)
+  // findAll() {
+  //   return this.gymItemService.findAll();
+  // }
+
+  @Get("get-all/:id")
   @UseGuards(JwtAuthGuard)
-  findAll() {
-    return this.gymItemService.findAll();
+  findGymItems(@Param("id") id: string) {
+    return this.gymItemService.findGymItems(id);
   }
 
   @Patch(":id")

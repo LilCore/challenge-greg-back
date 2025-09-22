@@ -3,4 +3,5 @@ export class CreateGymItemDto {
   details: string;
   price: number;
   isFavorite: boolean;
+  userId: string;
 }

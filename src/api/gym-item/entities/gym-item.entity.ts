@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm";
+import { User } from "../../user/entities/user.entity";
 
 @Entity({ name: "gym_items" })
 export class GymItem {
@@ -16,4 +23,8 @@ export class GymItem {
 
   @Column({ default: false })
   isFavorite: boolean;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: "userId" })
+  user: User;
 }

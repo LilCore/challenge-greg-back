@@ -20,6 +20,7 @@ export class GymItemService {
         details: z.string(),
         price: z.number().min(0),
         isFavorite: z.boolean(),
+        userId: z.string().uuid(),
       });
       const parsed = ZodGymItem.safeParse(createGymItemDto);
       if (!parsed.success) {
@@ -30,7 +31,11 @@ export class GymItemService {
         };
       }
 
-      const newGymItem = this.gymItemRepository.create(createGymItemDto);
+      const newGymItem = this.gymItemRepository.create({
+        ...createGymItemDto,
+        user: { id: createGymItemDto.userId },
+      });
+      // console.log("Creating gym item:", newGymItem);
       const savedGymItem = await this.gymItemRepository.save(newGymItem);
 
       return {
@@ -47,9 +52,11 @@ export class GymItemService {
     }
   }
 
-  async findAll() {
+  async findGymItems(userId: string) {
     try {
-      const gymItems = await this.gymItemRepository.find();
+      const gymItems = await this.gymItemRepository.find({
+        where: { user: { id: userId } },
+      });
       return {
         success: true,
         message: "Gym items fetched successfully",
