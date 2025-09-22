@@ -82,9 +82,8 @@ La IA ayudó principalmente en la generación de código repetitivo, documentaci
 
 ## Colección Postman/Insomnia o Swagger URL
 
-- [Swagger UI](http://localhost:3000/api)
-- Puedes importar la colección Postman desde el archivo `postman_collection.json` (si existe en el repo). ------------------------------FALTAAAAA
+- [Swagger UI](https://challenge-greg-back.onrender.com/docs)------------------------------FALTAAAAA
 
-## App funcionando (URL) --------------------------------FALTA--------------------------------FALTA--------------------------------FALTA
+## App funcionando (URL)
 
 - Backend: [URL de Render](https://challenge-greg-back.onrender.com/).
