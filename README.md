@@ -82,7 +82,7 @@ La IA ayudó principalmente en la generación de código repetitivo, documentaci
 
 ## Colección Postman/Insomnia o Swagger URL
 
-- [Swagger UI](https://challenge-greg-back.onrender.com/docs)------------------------------FALTAAAAA
+- [Swagger UI](https://challenge-greg-back.onrender.com/docs)
 
 ## App funcionando (URL)
 
